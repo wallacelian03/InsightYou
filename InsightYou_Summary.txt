@@ -1,0 +1,187 @@
+Figma Design: https://www.figma.com/design/WID7yxItgHKg3NnyvFb10z/InsightYou?node-id=23-138&t=RvK95z67SwLysfcg-0
+
+Main:
+-Phone Portrait Size (1920x1080)
+-Background.png (100%)
+-BGM.mp3
+-Mute.png (Default With Sound) | Position - X:22/Y:20 | Dimensions - W:80/H:80 | Add Shadow
+-Sound.png (After Muted) | Position - X:22/Y:20 | Dimensions - W:80/H:80 | Add Shadow
+-Click.mp3 
+
+Remarks:
+1. All pages using same Background.png.
+2. Default display Mute.png with BGM.mp3, after clicked Mute.png mute the BGM.mp3, hide Muted.png and display Sound.png. (Apply to all pages)
+3. Click.mp3 is the sound effect when clicking icons. (Mute,Sound,Play,Answer,Return,Submit,Home)
+
+
+Home:
+-InsightYou | Font: Showcard Gothic | Font-Size: 50 | Font-Color: FFD501 | Align-Center | Position: X:54/Y:377 | Add Shadow
+-A Personality Discovery Game Based On MBTI | Font: Signika Negative SC | Font-Size: 15 | Font-Color: 000000 | Align-Center | Position: X:44/Y:439 | Add Shadow
+-Play.png | Position - X:106/Y:449 | Dimensions - W:200/H:200 | Add Shadow
+
+Remarks:
+1. When user click Play.png, navigate to QNA_1 page.
+
+
+QNA_1-10 (10 Pages - 1 Question With 4 Preset Answers): 
+-Question 1/10: | Font: Signika Negative SC | Font-Size: 15 | Font-Color: 00000 | Position: X:25/Y:150
+-Board.png | Position - X:16/Y:157 | Dimensions - W:380/H:264
+-Click Your Answer: | Font: Signika Negative SC | Font-Size: 15 | Font-Color: 00000 | Position: X:25/Y:421
+
+Remarks:
+1. Do a Page For Each Questions, Total Will Have 10 Pages With Different Questions and Answers.
+2. Return.png Display In Question 2 to Question 10 Middle Below The 4 Answers, User Click Return.png For Back to Previous Page.
+3. Submit.png Display In Question 10 Beside Return.png For Submit and Proceed to Result Page.
+
+
+Result:
+-Your MBTI Is: | Font: Signika Negative SC | Font-Size: 30 | Font-Color: 00000 | Position: X:50/Y:153 | Add Shadow
+-Character.png | Position - X:87/Y:241 | Dimensions - W:250/H:250 | Add Shadow
+-MBTI | Font: Suez One | Font-Size: 35 | Font-Color: 00000 | Position: X:50/Y:250 | Add Shadow
+-Quote.png | Position - X:18/Y:277 | Dimensions - W:388/H:194
+-Quote Text | Font: Spline Sans | Font-Size: 15 | Font-Color: 00000 | Position: X:60/Y:343
+-Home.png | Position - X:174/Y:703 | Dimensions - W:64/H:64 | Add Shadow
+
+Remarks:
+1. Character.png is general, but the result should display the relevant character image for each MBTI result like result is INFJ then display INFJ.png.
+2. MBTI same as the character, display the name of the MBTI result like INFJ, ENFP...
+3. The result should have formula to generate, like Question 1 choose A + Q2 choose B, Q3 choose C, the MBTI result will be which MBTI.
+4. Quote would be different based on the MBTI result, each result will have 3 different quotes, and display randomly at once.
+5. Home.png is for back to homepage after clicked.
+
+
+10 Questions and 40 Questions (4 Answers For Each Question, Different Answer Combination Will Affect The Result Of MBTI):
+
+Question 1 (E/I)
+When you have free time on the weekend, what do you prefer to do?
+A. Go to a party or group event ( E )
+B. Hang out with a small group of close friends ( E )
+C. Stay at home reading or gaming alone ( I )
+D. Go for a solo walk or hobby time ( I )
+
+Question 2 (S/N)
+When learning something new, what’s more interesting to you?
+A. Practical skills I can use right away ( S )
+B. Real examples and case studies ( S )
+C. Imagining future possibilities and concepts ( N )
+D. Abstract theories and “what-if” scenarios ( N )
+
+Question 3 (T/F)
+If a friend made a mistake at work and asked for your opinion, what would you do?
+A. Point out the exact error and suggest a fix ( T )
+B. Analyze what caused the problem ( T )
+C. Comfort them and encourage them first ( F )
+D. Tell them it’s okay and help them feel better ( F )
+
+Question 4 (J/P)
+When planning a trip, what’s your style?
+A. Book everything in advance, down to the daily schedule ( J )
+B. Decide on the main activities before going ( J )
+C. Just book the flight/hotel and figure out the rest later ( P )
+D. Go with the flow and decide day by day ( P )
+
+Question 5 (E/I)
+How do you usually recharge after a long week?
+A. Meet friends for dinner or drinks ( E )
+B. Join a social activity ( E )
+C. Stay home and enjoy “me time” ( I )
+D. Watch movies alone or with one close friend ( I )
+
+Question 6 (S/N)
+When solving problems, you…
+A. Use tried-and-true methods ( S )
+B. Look at what has worked in the past ( S )
+C. Brainstorm new approaches ( N )
+D. Think outside the box, even if it’s risky ( N )
+
+Question 7 (T/F)
+In group decisions, you…
+A. Vote for the most logical option ( T )
+B. Argue based on facts and data ( T )
+C. Support the choice that makes people happiest ( F )
+D. Consider how it will affect relationships ( F )
+
+Question 8 (J/P)
+How do you deal with deadlines?
+A. Start early and finish ahead of time ( J )
+B. Make a clear step-by-step plan ( J )
+C. Work best under last-minute pressure ( P )
+D. Keep options open until the last possible moment ( P )
+
+Question 9 (E/I)
+At a networking event, you…
+A. Talk to as many new people as possible ( E )
+B. Enjoy bouncing between different groups ( E )
+C. Stick with people you know well ( I )
+D. Prefer listening over speaking ( I )
+
+Question 10 (S/N)
+What excites you more in a story?
+A. Detailed descriptions of realistic events ( S )
+B. Step-by-step progression you can picture ( S )
+C. Imaginative worlds and unusual plots ( N )
+D. Symbolism and hidden meanings ( N )
+
+
+Formula to Decide Result:
+
+// 1️⃣ Mapping of questions to MBTI traits
+const questionMap = {
+    1: { A: 'E', B: 'E', C: 'I', D: 'I' }, // E/I
+    2: { A: 'S', B: 'S', C: 'N', D: 'N' }, // S/N
+    3: { A: 'T', B: 'T', C: 'F', D: 'F' }, // T/F
+    4: { A: 'J', B: 'J', C: 'P', D: 'P' }, // J/P
+    5: { A: 'E', B: 'E', C: 'I', D: 'I' }, // E/I
+    6: { A: 'S', B: 'S', C: 'N', D: 'N' }, // S/N
+    7: { A: 'T', B: 'T', C: 'F', D: 'F' }, // T/F
+    8: { A: 'J', B: 'J', C: 'P', D: 'P' }, // J/P
+    9: { A: 'E', B: 'E', C: 'I', D: 'I' }, // E/I
+    10:{ A: 'S', B: 'S', C: 'N', D: 'N' }  // S/N
+};
+
+// 2️⃣ Initialize counters
+let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+// Example: user's answers array (index = question number - 1)
+// Each element is 'A', 'B', 'C', or 'D'
+let userAnswers = ['A', 'C', 'B', 'D', 'A', 'C', 'A', 'C', 'B', 'D'];
+
+// 3️⃣ Count answers
+userAnswers.forEach((answer, index) => {
+    let qNum = index + 1;
+    let trait = questionMap[qNum][answer];
+    scores[trait] += 1;
+});
+
+// 4️⃣ Determine MBTI letters
+let letter1 = scores.E >= scores.I ? 'E' : 'I';
+let letter2 = scores.S >= scores.N ? 'S' : 'N';
+let letter3 = scores.T >= scores.F ? 'T' : 'F';
+let letter4 = scores.J >= scores.P ? 'J' : 'P';
+
+// 5️⃣ Combine MBTI type
+let mbtiResult = letter1 + letter2 + letter3 + letter4;
+
+// 6️⃣ Output result
+console.log("Your MBTI type is:", mbtiResult);
+
+
+Quotes For The Result of MBTI Character:
+
+INTJ - "INTJs are the strategic masterminds, seeing possibilities far beyond the present and planning for a better future."
+INTP - "INTPs are the curious thinkers, exploring ideas and patterns with relentless imagination."
+ENTJ - "ENTJs are the bold leaders, driven to turn visions into reality and inspire others along the way."
+ENTP - "ENTPs are the playful innovators, always challenging the status quo and sparking new possibilities."
+INFJ - "INFJs are the quiet visionaries, driven by deep empathy and a desire to make the world a better place, even when they do so in silence."
+INFP - "INFPs are the gentle dreamers, guided by their ideals and a longing to live authentically."
+ENFJ - "ENFJs are the inspiring motivators, uplifting others and leading with warmth and insight."
+ENFP - "ENFPs are the enthusiastic adventurers, following their curiosity and embracing life with passion."
+ISTJ - "ISTJs are the dependable organizers, valuing tradition and responsibility in everything they do."
+ISFJ - "ISFJs are the caring protectors, quietly supporting and nurturing those around them."
+ESTJ - "ESTJs are the practical leaders, focused on efficiency and making things happen reliably."
+ESFJ - "ESFJs are the warm-hearted coordinators, bringing people together and caring for their community."
+ISTP - "ISTPs are the hands-on problem solvers, adapting quickly and mastering challenges with skill."
+ISFP - "ISFPs are the artistic souls, expressing beauty and emotion through their unique perspective."
+ESTP - "ESTPs are the daring doers, embracing excitement and action with confidence."
+ESFP - "ESFPs are the lively performers, spreading joy and energy wherever they go."
+

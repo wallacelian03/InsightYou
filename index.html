@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>InsightYou – MBTI Mini Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Signika+Negative:wght@400;600;700&family=Suez+One&family=Spline+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* =========================
+   Global Styles
+========================= */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0fb2ff;
+  -webkit-tap-highlight-color: transparent;
+  font-family: 'Signika Negative', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+#stage {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: url('./assets/Background.png') no-repeat center center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+.hidden { display: none !important; }
+
+/* =========================
+   Sound Toggle
+========================= */
+.sound-toggle {
+  position: fixed;       /* changed from absolute to fixed */
+  top: 20px;
+  right: 22px;
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  filter: drop-shadow(0 3px 3px rgba(0,0,0,.35));
+  user-select: none;
+  z-index: 200;          /* make sure it’s above all screens */
+}
+
+
+/* =========================
+   Home Page
+========================= */
+.home-title {
+  position: absolute;
+  top: 377px;
+  left: 54px;
+  width: 306px;
+  text-align: center;
+  font-family: 'Showcard Gothic', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 50px;
+  color: #FFD501;
+  text-shadow: 0 3px 0 rgba(0,0,0,.2), 0 6px 10px rgba(0,0,0,.3);
+}
+
+.home-subtitle {
+  position: absolute;
+  top: 439px;
+  left: 44px;
+  width: 326px;
+  text-align: center;
+  font-size: 15px;
+  color: #000;
+  text-shadow: 0 1px 0 rgba(255,255,255,.4);
+}
+
+.play-btn {
+  position: absolute;
+  top: 449px;
+  left: 106px;
+  width: 200px;
+  height: 200px;
+  cursor: pointer;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+  user-select: none;
+}
+
+/* =========================
+   QNA Pages
+========================= */
+.qna-header {
+  position: absolute;
+  top: 150px;
+  left: 25px;
+  font-size: 15px;
+  color: #000;
+}
+
+.board {
+  position: absolute;
+  top: 157px;
+  left: 16px;
+  width: 395px;
+  height: 264px;
+  user-select: none;
+}
+
+.question-text {
+  position: absolute;
+  top: 198px;
+  left: 36px;
+  right: 36px;
+  font-size: 19px; /* enlarged */
+  color: #000;
+  line-height: 1.4;
+  text-align: left; /* left aligned inside board */
+}
+
+.answer-label {
+  position: absolute;
+  top: 421px;
+  left: 25px;
+  font-size: 15px;
+  color: #000;
+}
+
+.answers {
+  position: absolute;
+  top: 445px;
+  left: 20px;
+  right: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.answer-btn {
+  background: #fff;
+  border: 2px solid rgba(0,0,0,.2);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.25));
+  transition: transform .06s ease;
+}
+
+.answer-btn:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+/* =========================
+   Return & Home Buttons (Q2-Q10)
+========================= */
+.nav-buttons {
+  position: absolute;
+  bottom: 40px; /* slightly higher */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+.icon-btn {
+  width: 64px;
+  height: 64px;
+  cursor: pointer;
+  user-select: none;
+  filter: drop-shadow(0 4px 7px rgba(0,0,0,.35));
+}
+
+/* Return button slightly larger than Home for Q2-Q10 */
+.icon-btn#returnBtn {
+  width: 70px;
+  height: 70px;
+}
+
+/* =========================
+   Result Page
+========================= */
+.result-page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 140px; /* move lower than volume button */
+  box-sizing: border-box;
+}
+
+/* Top: Your MBTI is: */
+.result-title {
+  font-family: 'Signika Negative';
+  font-size: 32px;
+  color: #000;
+  text-shadow: 0 2px 0 rgba(255,255,255,.6), 0 4px 8px rgba(0,0,0,.25);
+  text-align: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+/* Character Image */
+.result-character {
+  width: 250px;
+  height: 250px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+  margin-bottom: 20px;
+}
+
+/* MBTI Name */
+.result-mbti {
+  font-family: 'Suez One';
+  font-size: 36px;
+  color: #000;
+  text-shadow: 0 2px 0 rgba(255,255,255,.6), 0 4px 8px rgba(0,0,0,.25);
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+/* Quote Container */
+.quote-container {
+  position: relative;
+  width: 388px;
+  height: 194px;
+  margin-bottom: 40px; /* moved up slightly */
+}
+
+.quote-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.quote-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Spline Sans';
+  font-size: 15px;
+  color: #000;
+  text-align: center;
+  width: 85%;
+  line-height: 1.4;
+}
+
+/* Result Page Home Button – fix position */
+.result-page .icon-btn#homeResultBtn {
+  width: 64px;
+  height: 64px;
+  cursor: pointer;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+}
+
+.result-nav {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  z-index: 100;
+}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <!-- AUDIO -->
+  <audio id="bgm" src="./Assets/BGM.mp3" loop autoplay preload="auto"></audio>
+  <audio id="clickSfx" src="./assets/Click.mp3" preload="auto"></audio>
+
+  <img id="soundBtn" class="sound-toggle" src="./assets/Mute.png" alt="sound toggle">
+
+  <!-- HOME -->
+  <section id="screen-home" class="screen active">
+    <div class="home-title">INSIGHTYOU</div>
+    <div class="home-subtitle">A Personality Discovery Game Based On MBTI</div>
+    <img id="btnPlay" class="play-btn" src="./assets/Play.png" alt="Play">
+  </section>
+
+  <!-- Questions 1–10 -->
+  <!-- We'll dynamically create Q2–Q10 with nav buttons -->
+</div>
+
+<script>
+const screens = {};
+const answers = [];
+const questionData = [
+  { q:"When you have free time on the weekend, what do you prefer to do?", a:["Go to a party or group event","Hang out with a small group of close friends","Stay at home reading or gaming alone","Go for a solo walk or hobby time"], trait:['E','E','I','I'] },
+  { q:"When learning something new, what’s more interesting to you?", a:["Practical skills I can use right away","Real examples and case studies","Imagining future possibilities and concepts","Abstract theories and “what-if” scenarios"], trait:['S','S','N','N'] },
+  { q:"If a friend made a mistake at work and asked for your opinion, what would you do?", a:["Point out the exact error and suggest a fix","Analyze what caused the problem","Comfort them and encourage them first","Tell them it’s okay and help them feel better"], trait:['T','T','F','F'] },
+  { q:"When planning a trip, what’s your style?", a:["Book everything in advance, down to the daily schedule","Decide on the main activities before going","Just book the flight/hotel and figure out the rest later","Go with the flow and decide day by day"], trait:['J','J','P','P'] },
+  { q:"How do you usually recharge after a long week?", a:["Meet friends for dinner or drinks","Join a social activity","Stay home and enjoy “me time”","Watch movies alone or with one close friend"], trait:['E','E','I','I'] },
+  { q:"When solving problems, you…", a:["Use tried-and-true methods","Look at what has worked in the past","Brainstorm new approaches","Think outside the box, even if it’s risky"], trait:['S','S','N','N'] },
+  { q:"In group decisions, you…", a:["Vote for the most logical option","Argue based on facts and data","Support the choice that makes people happiest","Consider how it will affect relationships"], trait:['T','T','F','F'] },
+  { q:"How do you deal with deadlines?", a:["Start early and finish ahead of time","Make a clear step-by-step plan","Work best under last-minute pressure","Keep options open until the last possible moment"], trait:['J','J','P','P'] },
+  { q:"At a networking event, you…", a:["Talk to as many new people as possible","Enjoy bouncing between different groups","Stick with people you know well","Prefer listening over speaking"], trait:['E','E','I','I'] },
+  { q:"What excites you more in a story?", a:["Detailed descriptions of realistic events","Step-by-step progression you can picture","Imaginative worlds and unusual plots","Symbolism and hidden meanings"], trait:['S','S','N','N'] }
+];
+
+const questionMap = {
+  1: { A: 'E', B: 'E', C: 'I', D: 'I' },
+  2: { A: 'S', B: 'S', C: 'N', D: 'N' },
+  3: { A: 'T', B: 'T', C: 'F', D: 'F' },
+  4: { A: 'J', B: 'J', C: 'P', D: 'P' },
+  5: { A: 'E', B: 'E', C: 'I', D: 'I' },
+  6: { A: 'S', B: 'S', C: 'N', D: 'N' },
+  7: { A: 'T', B: 'T', C: 'F', D: 'F' },
+  8: { A: 'J', B: 'J', C: 'P', D: 'P' },
+  9: { A: 'E', B: 'E', C: 'I', D: 'I' },
+  10:{ A: 'S', B: 'S', C: 'N', D: 'N' }
+};
+
+const bgm = document.getElementById('bgm');
+const clickSfx = document.getElementById('clickSfx');
+const soundBtn = document.getElementById('soundBtn');
+
+let isMuted = false;
+
+// Preload audio
+bgm.preload = 'auto';
+clickSfx.preload = 'auto';
+
+// Function to safely play BGM
+function playBGM() {
+  if(!isMuted) {
+    bgm.play().catch(()=>{}); // fails silently on mobile until user interaction
+  }
+}
+
+// Start BGM on first user interaction anywhere
+function startBGMOnce() {
+  playBGM();
+  window.removeEventListener('click', startBGMOnce);
+  window.removeEventListener('touchstart', startBGMOnce);
+}
+window.addEventListener('click', startBGMOnce);
+window.addEventListener('touchstart', startBGMOnce);
+
+// Toggle sound button
+soundBtn.addEventListener('click', () => {
+  clickSfx.play();
+  if(isMuted){
+    bgm.play().catch(()=>{});
+    soundBtn.src = './assets/Mute.png';
+    isMuted = false;
+  } else {
+    bgm.pause();
+    soundBtn.src = './assets/Sound.png';
+    isMuted = true;
+  }
+});
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  // auto-resume BGM when showing home
+  if(id === 'screen-home' && !isMuted){
+    bgm.play().catch(()=>{});
+  }
+}
+
+// Also play clickSfx on Play button
+document.getElementById('btnPlay').addEventListener('click', () => {
+  clickSfx.play();
+  playBGM(); // ensure BGM starts on Play click
+});
+
+// Stage
+const stage = document.getElementById('stage');
+const homeScreen = document.getElementById('screen-home');
+
+// Create question screens
+const screensArr = [];
+
+function createQuestionScreen(index){
+  const qNum = index+1;
+  const screen = document.createElement('section');
+  screen.id = 'screen-q'+qNum;
+  screen.classList.add('screen');
+
+  let navHTML = '';
+  if(qNum === 1){
+    navHTML = `<div class="nav-buttons" style="bottom:60px;">
+                 <img class="icon-btn" id="returnBtn" src="./assets/Return.png">
+               </div>`;
+  } else {
+    navHTML = `<div class="nav-buttons" style="bottom:60px;">
+                 <img class="icon-btn" id="returnBtn" src="./assets/Return.png">
+                 <img class="icon-btn" id="homeBtn" src="./assets/Home.png">
+               </div>`;
+  }
+
+  screen.innerHTML = `
+    <div class="qna-header">Question ${qNum}/10</div>
+    <img class="board" src="./assets/Board.png">
+    <div class="question-text">${questionData[index].q}</div>
+    <div class="answer-label">Click Your Answer:</div>
+    <div class="answers">
+      ${questionData[index].a.map((ans,i)=>`<div class="answer-btn" data-choice="${String.fromCharCode(65+i)}">${ans}</div>`).join('')}
+    </div>
+    ${navHTML}
+  `;
+  stage.appendChild(screen);
+  return screen;
+}
+
+// Initialize Q screens
+for(let i=0;i<10;i++){
+  screensArr.push(createQuestionScreen(i));
+}
+
+// Show screen function
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// Play button
+document.getElementById('btnPlay').addEventListener('click', ()=>{
+  clickSfx.play();
+  showScreen('screen-q1');
+});
+
+// Answer click
+screensArr.forEach((scr,scrIndex)=>{
+  const btns = scr.querySelectorAll('.answer-btn');
+  btns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      clickSfx.play();
+      answers[scrIndex] = btn.dataset.choice;
+      if(scrIndex<9) showScreen('screen-q'+(scrIndex+2));
+      else showResult();
+    });
+  });
+});
+
+// Return & Home buttons
+screensArr.forEach((scr,index)=>{
+  const returnBtn = scr.querySelector('#returnBtn');
+  if(returnBtn){
+    returnBtn.addEventListener('click', ()=>{ clickSfx.play();
+      if(index===0) showScreen('screen-home');
+      else showScreen('screen-q'+index);
+    });
+  }
+  const homeBtn = scr.querySelector('#homeBtn');
+  if(homeBtn){
+    homeBtn.addEventListener('click', ()=>{ clickSfx.play(); showScreen('screen-home'); });
+  }
+});
+
+// MBTI quotes
+const mbtiQuotes = {
+  INTJ:["INTJs are strategic masterminds, seeing possibilities far beyond the present.","They plan for a better future with precision.","Always thinking ahead and analyzing outcomes."],
+  INTP:["INTPs are curious thinkers, exploring ideas relentlessly.","They enjoy patterns and concepts.","Always asking why and imagining possibilities."],
+  ENTJ:["ENTJs are bold leaders, turning visions into reality.","They inspire others on the way.","Confident and decisive in every step."],
+  ENTP:["ENTPs are playful innovators, challenging status quo.","They spark new possibilities.","Always curious and inventive."],
+  INFJ:["INFJs are quiet visionaries, driven by empathy.","They want to make the world better.","Deeply reflective and idealistic."],
+  INFP:["INFPs are gentle dreamers guided by ideals.","They live authentically and creatively.","Always seeking meaning and purpose."],
+  ENFJ:["ENFJs are inspiring motivators, uplifting others.","They lead with warmth and insight.","Always attentive to others' needs."],
+  ENFP:["ENFPs are enthusiastic adventurers, following curiosity.","They embrace life with passion.","Always seeking new experiences."],
+  ISTJ:["ISTJs are dependable organizers, valuing tradition.","They focus on responsibility and efficiency.","Always practical and systematic."],
+  ISFJ:["ISFJs are caring protectors, supporting quietly.","They nurture those around them.","Always thoughtful and reliable."],
+  ESTJ:["ESTJs are decisive managers, keeping order.","They excel in planning and leadership.","Always focused and structured."],
+  ESFJ:["ESFJs are social harmonizers, creating community.","They value connection and tradition.","Always considerate and supportive."],
+  ISTP:["ISTPs are practical problem-solvers, hands-on and adaptable.","They enjoy action and risk.","Always observant and flexible."],
+  ISFP:["ISFPs are artistic souls, appreciating beauty.","They express creativity quietly.","Always in tune with the moment."],
+  ESTP:["ESTPs are adventurous doers, embracing life fully.","They thrive on excitement and challenge.","Always spontaneous and energetic."],
+  ESFP:["ESFPs are playful entertainers, enjoying the present.","They love fun and social connection.","Always lively and engaging."]
+};
+
+// Result
+function showResult() {
+  // Remove previous result screen if exists
+  const oldResult = document.getElementById('screen-result');
+  if (oldResult) oldResult.remove();
+
+  // Calculate MBTI result
+  const scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  answers.forEach((ans,i)=>{
+    const trait = questionMap[i+1][ans];
+    scores[trait]++;
+  });
+  const mbtiResult = 
+    (scores.E >= scores.I ? 'E' : 'I') +
+    (scores.S >= scores.N ? 'S' : 'N') +
+    (scores.T >= scores.F ? 'T' : 'F') +
+    (scores.J >= scores.P ? 'J' : 'P');
+
+  // Pick a random relevant quote
+  const quotesArr = mbtiQuotes[mbtiResult] || ["You are unique!"];
+  const randomQuote = quotesArr[Math.floor(Math.random() * quotesArr.length)];
+
+  // Create result screen
+  const screen = document.createElement('section');
+  screen.id = 'screen-result';
+  screen.classList.add('screen','active');
+
+  screen.innerHTML = `
+    <div class="result-page">
+      <div class="result-title">Your MBTI is:</div>
+      <img class="result-character" src="./assets/${mbtiResult}.png" alt="${mbtiResult}">
+      <div class="result-mbti">${mbtiResult}</div>
+      <div class="quote-container">
+        <img class="quote-img" src="./assets/Quote.png" alt="Quote">
+        <div class="quote-text">${randomQuote}</div>
+      </div>
+      <div class="result-nav">
+        <img class="icon-btn" id="homeResultBtn" src="./assets/Home.png">
+      </div>
+    </div>
+  `;
+  stage.appendChild(screen);
+
+  // Home button listener
+  document.getElementById('homeResultBtn').addEventListener('click', ()=>{
+    clickSfx.play();
+    showScreen('screen-home');
+  });
+
+  // Show result screen
+  showScreen('screen-result');
+}
+</script>
+
+</body>
+</html>
